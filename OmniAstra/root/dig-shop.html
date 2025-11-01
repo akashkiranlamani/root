@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ <meta charset="UTF-8">
+ <meta name="viewport" content="width=device-width, initial-scale=1.0">
+ <meta http-equiv="X-UA-Compatible" content="ie=edge">
+ <title>omniastra</title>
+ <link rel="stylesheet" href="style.css">
+ <style>
+  body {
+  background: black;
+  color: cyan;
+  text-align: center;
+  font-family: 'Poppins', sans-serif;
+}
+
+.shop-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+  margin: 40px;
+}
+
+.pdf-card {
+  background: rgba(0,255,255,0.1);
+  border: 1px solid #00ffff;
+  box-shadow: 0 0 15px cyan;
+  padding: 15px;
+  border-radius: 15px;
+  width: 250px;
+  transition: 0.3s;
+}
+
+.pdf-card:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 25px #0ff;
+}
+
+button {
+  background: linear-gradient(90deg, cyan, blue);
+  border: none;
+  color: white;
+  padding: 8px 15px;
+  margin: 5px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+button:hover {
+  background: linear-gradient(90deg, blue, cyan);
+}
+
+img {
+  width: 100%;
+  border-radius: 10px;
+}
+ </style>
+</head>
+<body>
+   <header>
+    <div class="brand">
+      <img src="logo/logo.jpg" alt="OmniAstra logo" width="60" height="60">
+      <h1>OmniAstra </h1>
+    </div>
+    <nav>
+      <a href="index.html" class="active">Home</a>
+      <a href="blog.html">Blog</a>
+      <a href="dig-shop.html">Dig-Shop</a>
+      <a href="about.html">About</a>
+    </nav>
+  </header>
+  <h2>OmniAstra Digital-Shop</h2>
+    <p>Buy PDFs @ ₹99 each or get Monthly Access @ ₹499</p>
+
+
+<h1>🚀 OmniAstra Digital PDFs Launching</h1>
+    <h3>Official Launch Date: 15 January 2026</h3>
+    <div class="countdown" id="countdown">Loading...</div>
+<section class="shop-grid">
+  <div class="pdf-card">
+    <img src="assets/img/">
+    <h4>new product.pdf</h4>
+    <button class="coming-soon">Coming Soon</button>
+  </div>
+
+  <div class="pdf-card">
+    <img src="">
+    <h4>new product.pdf</h4>
+    <button class="coming-soon">Coming Soon</button>
+  </div>
+
+  <div class="pdf-card">
+    <img src="assets/img/">
+    <h4>new product.pdf</h4>
+    <button class="coming-soon">Coming Soon</button>
+  </div>
+
+  <div class="pdf-card">
+    <img src="assets/img/">
+    <h4>new product.pdf</h4>
+    <button class="coming-soon">Coming Soon</button>
+  </div>
+
+  <div class="pdf-card">
+    <img src="assets/img/">
+    <h4>new product.pdf</h4>
+    <button class="coming-soon">Coming Soon</button>
+  </div>
+
+  <div class="pdf-card">
+    <img src="assets/img/">
+    <h4>new product.pdf</h4>
+    <button class="coming-soon">Coming Soon</button>
+  </div>
+</section>
+  <div class="monthly">
+    <button class="coming-soon">Monthly Pass Coming Soon</button>
+  </div>
+
+<script>
+function previewPDF(url){
+  window.open(url, "_blank");
+}
+
+// COUNTDOWN TIMER
+const launchDate = new Date("Jan 15, 2026 00:00:00").getTime();
+
+setInterval(() => {
+  const now = new Date().getTime();
+  const diff = launchDate - now;
+
+  if(diff <= 0){
+    document.getElementById("countdown").innerHTML = "✅ PDFs are now LIVE!";
+    return;
+  }
+
+  const days = Math.floor(diff / (1000*60*60*24));
+  const hours = Math.floor((diff % (1000*60*60*24)) / (1000*60*60));
+  const mins = Math.floor((diff % (1000*60*60)) / (1000*60));
+  const secs = Math.floor((diff % (1000*60)) / 1000);
+
+  document.getElementById("countdown").innerHTML =
+    `${days} Days : ${hours} Hrs : ${mins} Min : ${secs} Sec`;
+}, 1000);
+
+</script>
+
+</body>
+</html>

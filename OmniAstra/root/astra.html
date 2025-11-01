@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OmniAstra — Graha Analyzer v2</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{
+    font-family:'Poppins',sans-serif;
+    background:radial-gradient(circle at top,#020412,#000);
+    color:#e5faff;
+    text-align:center;
+    padding:30px;
+  }
+  h1{font-size:2em;color:#12e3e9;text-shadow:0 0 25px #12e3e9;}
+  .input-box{margin:25px auto;max-width:400px;}
+  input{
+    width:100%;padding:12px;border:none;
+    background:rgba(255,255,255,0.06);
+    color:#fff;border-radius:8px;margin-bottom:12px;
+    box-shadow:0 0 6px #12e3e9;
+  }
+  button{
+    background:linear-gradient(90deg,#12e3e9,#00ffcc);
+    color:#000;padding:10px 24px;
+    border:none;border-radius:10px;font-weight:700;
+    cursor:pointer;transition:0.3s;
+  }
+  button:hover{box-shadow:0 0 15px #00fff2;transform:scale(1.05);}
+  .result{
+    background:rgba(255,255,255,0.06);
+    border:1px solid rgba(255,255,255,0.1);
+    border-radius:10px;
+    box-shadow:0 0 15px rgba(0,255,255,0.1);
+    padding:20px;margin-top:25px;text-align:left;
+  }
+  .highlight{color:#ffd700;text-shadow:0 0 12px #ffd700;}
+  .graha{display:flex;justify-content:space-between;border-bottom:1px dashed rgba(255,255,255,0.05);margin:6px 0;}
+  .aura{margin-top:10px;display:inline-block;padding:6px 12px;border-radius:8px;border:1px solid #12e3e9;}
+  .bar{height:8px;border-radius:5px;background:linear-gradient(90deg,#00f0ff,#0ff);margin-top:4px;}
+</style>
+</head>
+<body>
+
+<h1>🔮 OmniAstra Graha Analyzer v2</h1>
+<p>Enter your full name to reveal your Graha Energy, Success Rate, and Super Power.</p>
+
+<div class="input-box">
+  <input id="name" placeholder="Enter your full name (e.g. Akash Lamani)">
+  <button onclick="analyze()">Analyze</button>
+</div>
+
+<div id="output"></div>
+
+<script>
+const letterMap = (() => {
+  const seq = [1,2,3,4,5,6,7,8,9];
+  const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  let map = {};
+  for(let i=0;i<letters.length;i++){ map[letters[i]] = seq[i%9]; }
+  return map;
+})();
+
+const numberToPlanet = {
+  1:'Surya',2:'Chandra',3:'Guru',4:'Rahu',5:'Budh',6:'Shukra',7:'Ketu',8:'Shani',9:'Mangal'
+};
+
+const planetTraits = {
+  Surya:{desc:'Leadership, self-confidence, authority',color:'#FFD700',power:'Command & Vision'},
+  Chandra:{desc:'Emotion, empathy, intuition',color:'#A3D2FF',power:'Emotional Intelligence'},
+  Guru:{desc:'Wisdom, spirituality, knowledge',color:'#7FFF7F',power:'Teaching & Expansion'},
+  Rahu:{desc:'Innovation, risk-taking, future vision',color:'#9B59B6',power:'Strategic Mind & Ambition'},
+  Budh:{desc:'Logic, speech, and adaptability',color:'#12E3E9',power:'Communication & Analysis'},
+  Shukra:{desc:'Luxury, charm, and attraction',color:'#FF6B6B',power:'Charisma & Creative Expression'},
+  Ketu:{desc:'Detachment, intuition, mysticism',color:'#FFD1DC',power:'Spiritual Awareness'},
+  Shani:{desc:'Discipline, endurance, order',color:'#909090',power:'Focus & Patience'},
+  Mangal:{desc:'Courage, energy, passion',color:'#FF4500',power:'Action & Determination'}
+};
+
+function analyzeName(name){
+  name = name.toUpperCase().replace(/[^A-Z]/g,'');
+  if(!name) return null;
+  let counts={}; Object.values(numberToPlanet).forEach(p=>counts[p]=0);
+  for(const ch of name){
+    const val = letterMap[ch];
+    const planet = numberToPlanet[val];
+    counts[planet] = (counts[planet]||0)+1;
+  }
+  const total = Object.values(counts).reduce((a,b)=>a+b,0)||1;
+  const perc={}; Object.keys(counts).forEach(p=>perc[p]=Math.round(counts[p]/total*100));
+  const sorted = Object.keys(perc).sort((a,b)=>perc[b]-perc[a]);
+  const dominant = sorted.slice(0,2);
+  const auraColor = planetTraits[sorted[0]].color;
+  const desc = dominant.map(p=>`${p}: ${planetTraits[p].desc}`).join(" • ");
+  return {name,percentages:perc,dominant,auraColor,desc};
+}
+
+function calcSuccess(a){
+  const key = a.dominant[0];
+  const planetScore = {Surya:95,Chandra:80,Guru:90,Rahu:88,Budh:85,Shukra:83,Ketu:75,Shani:92,Mangal:87};
+  let s = planetScore[key] || 80;
+  if(a.percentages[a.dominant[0]]>30) s += 3;
+  if(a.percentages[a.dominant[1]]>20) s += 2;
+  return Math.min(100,Math.round(s));
+}
+
+function analyze(){
+  const n=document.getElementById('name').value;
+  const a=analyzeName(n);
+  const out=document.getElementById('output');
+  out.innerHTML='';
+  if(!a){out.innerHTML='<p>Please enter a valid name.</p>';return;}
+  const success = calcSuccess(a);
+  const superPower = planetTraits[a.dominant[0]].power;
+  let html = `<div class='result'>
+  <h2>Name: <span class='highlight'>${a.name}</span></h2>
+  <p><strong>Dominant Graha:</strong> ${a.dominant.join(', ')}</p>
+  <p>${a.desc}</p>
+  <p><strong>Super Power:</strong> ${superPower}</p>
+  <p><strong>Success Rate:</strong> ${success}%</p>
+  <div class='bar' style='width:${success}%;background:${a.auraColor}'></div>
+  <h3 style='margin-top:10px;'>Graha Energy Distribution</h3>`;
+  for(const p in a.percentages){
+    html += `<div class='graha'><span>${p}</span><span>${a.percentages[p]}%</span></div>`;
+  }
+  html += `<div class='aura' style='background:${a.auraColor}'>Aura Color: ${a.auraColor}</div></div>`;
+  out.innerHTML = html;
+}
+</script>
+</body>
+</html>
